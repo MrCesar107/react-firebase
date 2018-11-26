@@ -10,8 +10,8 @@ class AppNav extends Component {
     return(
       <div>
         <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6" component="h1" className={ this.props.classes.grow }>
+          <Toolbar className={ this.props.classes.nav }>
+            <Typography color="inherit" variant="h6" component="h1" className={ this.props.classes.grow }>
               Albums
             </Typography>
             <Login />
@@ -23,5 +23,6 @@ class AppNav extends Component {
 }
 
 export default withStyles({
-  grow: { flexGrow: 1 }
+  grow: { flexGrow: 1 },
+  nav: { color: 'white' }
 })(AppNav);
