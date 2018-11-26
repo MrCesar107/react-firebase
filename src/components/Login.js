@@ -14,7 +14,7 @@ class Login extends Component {
     provider.addScope('https://www.googleapis.com/auth/photoslibrary.readonly');
 
     firebase.auth().signInWithPopup(provider).then(result => {
-      console.log(result);
+      let token = result.credential.accessToken;
     }).catch(err => {
       console.log(err);
     });
