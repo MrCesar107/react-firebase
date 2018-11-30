@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import Button from '@material-ui/core/Button';
 import firebase from '../initializers/firebase';
-import Avatar from '@material-ui/core/Avatar';
-import { withStyles } from '@material-ui/core/styles';
 
-import IconButton from '@material-ui/core/IconButton';
-import ExitToApp from '@material-ui/icons/ExitToApp';
+//Redux
+import { connect } from 'react-redux';
+import { saveToken } from '../initializers/actions';
+import { clearToken } from '../initializers/actions';
+
+//Components
+import AuthElements from '../components/AuthElements';
 
 class Login extends Component {
   constructor(props) {
@@ -31,41 +33,40 @@ class Login extends Component {
 
     firebase.auth().signInWithPopup(provider).then(result => {
       let token = result.credential.accessToken;
+      this.props.saveToken(token);
     }).catch(err => {
       console.log(err);
     });
   }
 
   logout() {
-    firebase.auth().signOut().then(console.log)
-  }
-
-  logInButton() {
-    if(this.state.userLoggedIn) {
-      return(
-        [<Avatar src={ this.state.photoUrl } />, (<IconButton color="inherit" onClick={ this.logout }><ExitToApp /></IconButton>)]
-      );
-    } else {
-      return(
-        <Button variant="contained" onClick={ this.login }>
-          Iniciar sesión
-        </Button>
-      );
-    }
+    firebase.auth().signOut().then(() => {
+      this.props.clearToken();
+    });
   }
 
   render() {
     return(
-      <div className={this.props.classes.container}>
-        { this.logInButton() }
-      </div>
+      <AuthElements
+        login={this.login}
+        logout={this.logout}
+        userLoggedIn={this.state.userLoggedIn}
+        token={this.props.token}
+        photoUrl={this.state.photoUrl}
+      />
     );
   }
 }
 
-export default withStyles({
-  container: {
-    display: 'flex',
-    flexDirection: 'row'
+const mapStateToProps = (state) => {
+  return {
+    token: state.token
   }
-})(Login);
+}
+
+const mapDispatchToProps = {
+  saveToken,
+  clearToken
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
